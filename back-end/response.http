@@ -1,0 +1,153 @@
+
+###
+POST http://localhost:5000/api/user/activation/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiYWJjeHl6IiwiZW1haWwiOiJoaWVwbnQxQGZ1bml4LmVkdS52biIsInBhc3N3b3JkIjoiMTIzNDU2NzgiLCJhdmF0YXIiOiJyZWRmb3gtMTY4NzgzNDcxMjcxNC5wbmciLCJpYXQiOjE3MDQyNjg2NjksImV4cCI6MTcwNDI3MjI2OX0.TpuagCEh9gK6MZtDVNINvm1r20yQbN9X3Z1nQMtR7xw
+
+### 
+POST http://localhost:5000/api/user/login
+Content-Type: application/json
+
+{
+  "email":"hiepnt1@funix.edu.vn",
+  "password":"123456789"
+}
+
+###
+GET http://localhost:5000/api/user/getUser
+Content-Type: application/json
+
+###
+POST http://localhost:5000/api/admin/login
+Content-Type: application/json
+
+{
+  "email":"hiepnt1@funix.edu.vn",
+  "password":"456"
+}
+
+###
+
+###
+POST http://localhost:5000/api/product/create-product
+Content-Type: application/json
+
+{
+  "name": "Mizuno Mrl Sala Club",
+  "brand": "Mizuno",
+  "long_desc": "Thừa hường những ưu việt của thế hệ đàn anh đi trước. Trọng lượng nhẹ hơn các mẫu giày cùng phân khúc, giúp bạn di chuyển, xử lý bóng linh hoạt, nhanh nhậy. Thân giày được làm bằng chất liệu tổng hợp cao cấp có độ bền cao, tạo cảm  giác êm ái, thật chân khi chơi bóng
+  ",
+  "short_desc":" - Mũi giày được gia cố thêm miếng da lộn, tăng độ bền, hỗ trợ sút bóng",
+  "category":"Giày bóng đá chính hãng",
+  "price":"1590000",
+  "sale":"1200000",
+  "size":["39","40","41","42"],
+  "stock": 30,
+  "spects": {
+    "detail":"Orange",
+    "code":"Q1GB230372"
+  }
+}
+
+###
+PATCH http://localhost:5000/api/product/update/65952a3064ca9cb0b2ccc798
+Content-Type: application/json
+
+{
+  "name": "Mizuno Mrl Sala Club",
+  "brand": "Mizuno",
+  "long_desc": "
+  Thừa hường những ưu việt của thế hệ đàn anh đi trước. Trọng lượng nhẹ hơn các mẫu giày cùng phân khúc, giúp bạn di chuyển, xử lý bóng linh hoạt, nhanh nhậy. Thân giày được làm bằng chất liệu tổng hợp cao cấp có độ bền cao, tạo cảm  giác êm ái, thật chân khi chơi bóng.Giày có chất liệu da không thấm nước, bạn hoàn toàn tự tin khi chơi bóng bất chấp dưới mọi kiểu thời tiết mưa nắng, chất lượng mặt sân ra sao. Phần má giày ở cả 2 bên trái và phải được thiết kế cách điệu với những đường gờ sóng mềm mại. Nhờ đặc điểm này sẽ giúp việc kiểm soát, sút bóng chính xác hơn.Mũi giày được thiết kế da lộn, thiên theo hướng Futsal, hỗ trợ những pha xử lý bóng bằng mũi giày được gọn gàng, chuẩn xác.Riêng phần đế giày, có hai loại đinh. Một sự kết hợp vô cùng tinh tế của nhà sản xuất Mizuno. Trong đó, đinh vòng ngoài là các hình tam giác, làm tăng bề mặt tiếp xúc giữa giày và mặt sân. Còn lại là các đinh tròn bên trong có tác dụng tăng khả năng xoay người một cách uyển chuyển trong các pha tranh chấp với đối phương.Chính vì thế, phần đế được Mizuno chú trọng đặc biệt, với lại đinh TF giúp tạo độ ma sát cao khi di chuyển dù sân trơn trượt, đồng thời, người chơi dễ dàng kiểm soát bóng hơn. Lót trong sử dụng loại ZeroGlide, có khả năng giảm chấn.
+    ",
+  "short_desc":"- Mũi giày được gia cố thêm miếng da lộn, tăng độ bền, hỗ trợ sút bóng - Chất liệu da siêu mềm không thấm nước, trọng lượng được tối giản đáng kể - Form dáng phù hợp với mọi form chân, đặc biệt là chân bè
+    ",
+  "category":"Giày bóng đá chính hãng",
+  "price":"1590000",
+  "sale":"1200000",
+  "size":["39","40","41","42"],
+  "stock": 30,
+  "spects": {
+    "detail":"White",
+    "code":"QJIOPSJP2325"
+  }
+}
+
+###
+GET http://localhost:5000/api/product
+
+###
+GET http://localhost:5000/api/product/find/64f77145d203bb4734f82f8e
+
+###
+GET http://localhost:5000/api/order/orderUser
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWViN2FhZmRmNjUxYWQwN2U5YjRlYiIsImlhdCI6MTY5NDA3Mzk1MiwiZXhwIjoxNjk0Njc4NzUyfQ.Bhmi1JHIbvQpT52zMGc9ar92FneeIKF2nvAXUnn-Pe4
+
+###
+GET http://localhost:5000/api/order
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0ZWViN2FhZmRmNjUxYWQwN2U5YjRlYiIsImlzQWRtaW4iOiJhZG1pbiIsImlhdCI6MTY5NDE1NDgxMH0.Wf4PdoKUs9nATLIGWJ73ped1mZls4WOYg8M1vUbsffE
+
+###
+GET http://localhost:5000/api/user
+
+###
+PATCH http://localhost:5000/api/product/updateQuantity/64f77145d203bb4734f82f8e?quantity=4
+Content-Type: application/json
+
+###
+DELETE  http://localhost:5000/api/user/deleteOneOrMany/1
+
+###
+POST http://localhost:5000/auth/signUp
+Content-Type: application/json
+
+{
+  "phone": "hangnguyen3499@gmail.com"
+}
+
+
+###
+POST http://localhost:5000/auth/verify
+Content-Type: application/json
+
+{
+  "phone": "hangnguyen3499@gmail.com",
+  "otp":"580385"
+}
+
+###
+POST http://localhost:5000/api/user/confirmPass/1
+Content-Type: application/json
+
+{
+  "password": "12345"
+}
+
+###
+PATCH http://localhost:5000/api/user/receiver
+Content-Type: application/json
+
+{
+  "email": "hiepnt1@funix.edu.vn",
+  "infoReceiver": {
+    "name": "hehe",
+    "phone": "1245646331",
+    "address": "Xã Gia Ninh, Huyện Quảng Ninh, Tỉnh Quảng Bình",
+    "detail": "xóm phục minh, thiên địa hội"
+  }
+}
+
+###
+POST http://localhost:5000/api/order/create-checkout-session 
+Content-Type: application/json
+
+{
+  "products": "hiepnt1@funix.edu.vn"
+}
+
+###
+POST http://localhost:5000/api/order/orderUser
+Content-Type: application/json
+
+{
+  "email": "hiepnt1@funix.edu.vn"
+}
+
+###
