@@ -25,7 +25,7 @@ const VerifyOldPwd = () => {
   return (
     <div className=" bg-white -mb-[40px]">
       <div className=" bg-main w-full relative">
-        <div className=" absolute top-[60px] w-[400px] border rounded-md left-[30%] bg-white">
+        <div className=" absolute top-[35px] w-[400px] border rounded-md left-[30%] bg-white">
           <div className=" px-5 py-2 ">
             <div className="flex items-center gap-1">
               <div className=" block text-[1.25rem] text-[#222] font-medium">

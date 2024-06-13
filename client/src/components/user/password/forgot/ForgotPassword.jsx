@@ -5,11 +5,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../user.slide";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -17,6 +20,7 @@ const ForgotPassword = () => {
       try {
         const ss = await axios.post("/user/forgotPassword", { email });
         toast.success(ss.data.message);
+        dispatch(setUser(null));
         navigate("/verifyForgotPwd");
       } catch {
         toast.error("Email not found/ Email không tồn tại");

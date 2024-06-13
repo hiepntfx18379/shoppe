@@ -23,6 +23,12 @@ const userSchema = new mongoose.Schema(
     },
     receiver: {
       type: Object,
+      default: {
+        name: "",
+        phone: "",
+        address: "",
+        detail: "",
+      },
     },
     phone: {
       type: String,
@@ -35,8 +41,8 @@ const userSchema = new mongoose.Schema(
     },
     googleId: {
       type: String,
-      default: "",
     },
+    cardList: [Object],
   },
   { timestamps: true },
 );

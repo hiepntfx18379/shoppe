@@ -7,27 +7,34 @@ import { ordersColumns } from "../../datatablesource";
 import ListTransaction from "../list/ListTransaction";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import useFetch from "../../hookCustome/fetchData";
 
 const Home = () => {
-  const [countUser, setCountUser] = useState(0);
-  const [countRevenue, setCountRevenue] = useState(0);
+  const [checked, setChecked] = useState(0);
+  const [notChecked, setNotChecked] = useState(0);
+  const [incomeChecked, setIncomeChecked] = useState(0);
+  const [incomeNotChecked, setIncomeNotChecked] = useState(0);
 
   useEffect(() => {
-    async function getAll() {
-      try {
-        const response = await axios.get("/order");
-        let money = response.data.reduce(
-          (total, item) => total + Number(item.totalPrice),
-          0,
-        );
-        setCountRevenue(money);
-        setCountUser(response.data.length);
-      } catch (err) {
-        console.log(err);
-      }
-    }
+    const getOrders = async () => {
+      const res = await axios.get("/order");
+      const allOrders = await res.data;
 
-    getAll();
+      let checked = allOrders.filter((x) => x.status === true);
+      let notChecked = allOrders.filter((x) => x.status === false);
+      let incomeChecked = checked?.reduce((total, acc) => total + acc.total, 0);
+      let incomeNotChecked = notChecked?.reduce(
+        (total, acc) => total + acc.total,
+        0,
+      );
+
+      setChecked(checked.length);
+      setNotChecked(notChecked.length);
+      setIncomeChecked(incomeChecked);
+      setIncomeNotChecked(incomeNotChecked);
+    };
+
+    getOrders();
   }, []);
 
   return (
@@ -36,12 +43,17 @@ const Home = () => {
       <div className="homeContainer">
         <Navbar />
         <div className="widgets">
-          <Widget type="order" count={countUser} />
-          <Widget type="earning" count={countRevenue} />
+          <Widget title="Đã thanh toán" user={checked} count={incomeChecked} />
+          <Widget
+            notPay={true}
+            title="Chưa thanh toán"
+            user={notChecked}
+            count={incomeNotChecked}
+          />
         </div>
         <div className="charts"></div>
         <div className="listContainer">
-          <div className="listTitle">Latest Transactions</div>
+          <div className="listTitle">All Transactions</div>
           <ListTransaction columns={ordersColumns} />
         </div>
       </div>

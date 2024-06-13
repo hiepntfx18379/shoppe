@@ -18,13 +18,15 @@ const sendMail = async (options) => {
     subject: options.subject,
     text: options.message,
     html: options.temp,
-    attachments: [
-      {
-        filename: options.filename,
-        path: path.join(__dirname, `../${options.filename}`),
-        contentType: "application/pdf",
-      },
-    ],
+    attachments: options.filename
+      ? [
+          {
+            filename: options.filename,
+            path: path.join(__dirname, `../${options.filename}`),
+            contentType: "application/pdf",
+          },
+        ]
+      : [],
   };
 
   await transporter.sendMail(mailOptions);

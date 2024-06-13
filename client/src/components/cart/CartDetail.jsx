@@ -1,4 +1,4 @@
-import React, {  useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ProductRow from "./ProductRow";
@@ -7,16 +7,13 @@ import { TfiAngleDown, TfiAngleUp } from "react-icons/tfi";
 import DiscountDetail from "./DiscountDetail";
 import confirmCartSlide from "./cart.slide";
 import { useTranslation } from "react-i18next";
-import {
-  allItemsCart,
-  decreQuantity,
-  increQuantity,
-  removeItem,
-} from "../home/product/product.slide";
-import { infoUser } from "../user/user.slide";
+import { infoUser, setUser } from "../user/user.slide";
+import axios from "axios";
+import { userContext } from "../parentPage/ParentPage";
 
 const CartDetail = () => {
-  const carts = useSelector(allItemsCart);
+  const info = useContext(userContext);
+  const [carts, setCarts] = useState(info.cardList || []);
   const [listCheck, setListCheck] = useState([]);
   const [total, setTotal] = useState(0);
   const [oldPrice, setOldPrice] = useState(0);
@@ -26,6 +23,8 @@ const CartDetail = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { t } = useTranslation();
+  const [id, setId] = useState();
+  const [size, setSize] = useState();
 
   useEffect(() => {
     if (listCheck.length > 0) {
@@ -52,6 +51,17 @@ const CartDetail = () => {
       setOldPrice(0);
     }
   }, [listCheck, carts]);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await axios.get("/user/getUser");
+      setCarts(res.data.user.cardList);
+      dispatch(setUser(res.data.user));
+    };
+    setId("");
+    getUser();
+  }, [id, dispatch, size]);
+
   // code for check box slow slow
   const handleSelect = (e, id) => {
     if (e.target.checked) {
@@ -73,17 +83,23 @@ const CartDetail = () => {
   // end code checkbox
 
   // code for quantity
-  const incre = (it) => {
-    dispatch(increQuantity(it));
-  };
+  const incre = useCallback(async (it) => {
+    await axios.patch("/user/increQuantity", { idPro: it._id, size: it.size });
+    setId(it._id);
+    setSize(it.size);
+  }, []);
 
-  const decre = (it) => {
-    dispatch(decreQuantity(it));
-  };
+  const decre = useCallback(async (it) => {
+    await axios.patch("/user/decreQuantity", { idPro: it._id, size: it.size });
+    setId(it._id);
+    setSize(it.size);
+  }, []);
 
-  const del = (it) => {
-    dispatch(removeItem(it));
-  };
+  const del = useCallback(async (it) => {
+    await axios.post("/user/deleteproduct", { idPro: it._id, size: it.size });
+    setId(it._id);
+    setSize(it.size);
+  }, []);
 
   const confirmCart = () => {
     dispatch(
@@ -93,12 +109,12 @@ const CartDetail = () => {
         total,
       }),
     );
-    navigate("/profile/purchase");
+    navigate("/checkout");
   };
 
   return (
     <div className=" w-[90%] m-auto mt-5 relative">
-      <table className="table-auto w-[100%] text-center">
+      <table className="table-auto w-[100%] text-center border-collapse border border-slate-400">
         <thead className="bg-gray-200  tracking-widest">
           <tr className="">
             <th className=" py-4 pl-5 ">

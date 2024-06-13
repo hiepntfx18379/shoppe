@@ -1,5 +1,6 @@
 const express = require("express");
 const orderController = require("../../controller/order/order.controller");
+const verifyToken = require("../../utils/verifyToken");
 const routeOrder = express.Router();
 
 routeOrder.get("/", orderController.getAllOrder);

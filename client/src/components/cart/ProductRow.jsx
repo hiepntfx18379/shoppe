@@ -6,7 +6,7 @@ import Checkbox from "./Checkbox";
 
 const ProductRow = ({ item, checkValue, value, incre, decre, del, id }) => {
   return (
-    <tr>
+    <tr className="border border-b-black   ">
       <td className="pl-5">
         <Checkbox id={id} value={value} checkValue={checkValue} />
       </td>
@@ -34,7 +34,7 @@ const ProductRow = ({ item, checkValue, value, incre, decre, del, id }) => {
         </span>
       </td>
       <td>
-        ₫ <span>{item.actualPrice}</span>
+        ₫ <span>{item?.actualPrice}</span>
       </td>
 
       <td className="">
@@ -42,13 +42,15 @@ const ProductRow = ({ item, checkValue, value, incre, decre, del, id }) => {
           <button
             className="border border-[#757575]"
             onClick={() => decre(item)}
+            disabled={item.quantity > 1 ? false : true}
           >
             <AiOutlineMinus />
           </button>
-          <span className="px-4 box-border text-lg">{item.quantity}</span>
+          <span className="px-4 box-border text-lg">{item?.quantity}</span>
           <button
             className="border border-[#757575]"
             onClick={() => incre(item)}
+            disabled={item.quantity < item.stock ? false : true}
           >
             <IoMdAdd />
           </button>
@@ -57,7 +59,7 @@ const ProductRow = ({ item, checkValue, value, incre, decre, del, id }) => {
       <td>
         ₫
         {new Intl.NumberFormat("en-DE").format(
-          Number(item.actualPrice.replaceAll(".", "")) * item.quantity,
+          Number(item?.actualPrice.replaceAll(".", "")) * item?.quantity,
         )}
       </td>
       <td>

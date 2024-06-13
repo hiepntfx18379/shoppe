@@ -6,9 +6,14 @@ import { Button } from "@mui/material";
 import PopupOrderDetail from "./PopupOrderDetail";
 
 const DatatableTransaction = ({ columns }) => {
-  const { data, reFetch } = useFetch(`order`);
+  const { data, reFetch } = useFetch(`/order`);
   const [open, setOpen] = useState(false);
   const [pro, setPro] = useState("");
+  const [allOrder, setAllOrder] = useState([]);
+
+  useEffect(() => {
+    setAllOrder(data);
+  }, [data]);
 
   const handleClickView = (id) => {
     const index = data.findIndex((x) => x._id === id);
@@ -37,7 +42,7 @@ const DatatableTransaction = ({ columns }) => {
       <div className="datatable">
         <DataGrid
           className="datagrid"
-          rows={data}
+          rows={allOrder}
           columns={columns.concat(actionBtn)}
           pageSize={8}
           rowsPerPageOptions={[8]}

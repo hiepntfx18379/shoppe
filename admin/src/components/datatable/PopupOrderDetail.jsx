@@ -15,7 +15,7 @@ const PopupOrderDetail = ({ pro, setOpen }) => {
                   className="absolute right-3 top-3 z-50"
                   onClick={() => setOpen(false)}
                 />
-                <div className="grid grid-flow-col relative justify-stretch w-full 800px:flex">
+                <div className="flex flex-col  relative justify-stretch w-full 800px:flex">
                   <div className=" p-5 mt-1 ">
                     <div className="text-left ">
                       <div className="text-xl font-extrabold">
@@ -26,38 +26,27 @@ const PopupOrderDetail = ({ pro, setOpen }) => {
                         Id bill: {pro._id}
                       </div>
 
-                      <div className=" font-medium mt-2  text-xl">
-                        Id user: {pro.id_user}
-                      </div>
+                      <div className="flex justify-between">
+                        <div>
+                          <div> Người mua:</div>
+                          <div className=" flex flex-col">
+                            <span>Tên: {pro.buyer.name}</span>
+                            <span>Tên: {pro.buyer.email}</span>
+                            <span>Tên: {pro.buyer.phone}</span>
+                          </div>
+                        </div>
 
-                      <div className=" font-medium mt-2  text-xl">
-                        Name user: {pro.name}
-                      </div>
-
-                      <div className=" font-medium mt-2  text-xl">
-                        email: {pro.email}
-                      </div>
-
-                      <div className=" font-medium mt-2  text-xl">
-                        Phone number: {pro.phone}
-                      </div>
-
-                      <div className=" font-medium mt-2  text-xl">
-                        Address: {pro.address}
-                      </div>
-                      <div className=" font-medium mt-2  text-xl">
-                        Delivery: {pro.delivery}
-                      </div>
-                      <div className=" font-medium mt-2  text-xl">
-                        Status: {pro.status}
-                      </div>
-                      <div className=" font-medium mt-2  mb-4 text-xl">
-                        Date order: {pro.createdAt}
-                      </div>
-                      <div className="text-xl font-extrabold">
-                        Total:{" "}
-                        {new Intl.NumberFormat("en-DE").format(pro.totalPrice)}{" "}
-                        VND
+                        <div>
+                          <div> Người nhận:</div>
+                          <div className=" flex flex-col">
+                            <span>Tên: {pro.buyer?.receiver?.name}</span>
+                            <span>SDT: {pro.buyer?.receiver?.phone}</span>
+                            <span>
+                              Đc: {pro.buyer?.receiver?.detail},{" "}
+                              {pro.buyer?.receiver?.address}
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -68,7 +57,8 @@ const PopupOrderDetail = ({ pro, setOpen }) => {
                         <tr>
                           <th>NAME</th>
                           <th>IMAGE</th>
-                          <th>PRICE</th>
+                          <th>SIZE</th>
+                          <th>UNI PRICE</th>
                           <th>QUANTITY</th>
                           <th>TOTAL</th>
                         </tr>

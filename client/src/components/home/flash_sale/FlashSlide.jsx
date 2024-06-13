@@ -14,8 +14,8 @@ const FlashSlide = ({ products }) => {
   return (
     <div className="">
       <Slider {...settings}>
-        {products.slice(0, 10).map((pro) => (
-          <FlashSaleItem pro={pro} />
+        {products.slice(0, 10).map((pro, id) => (
+          <FlashSaleItem pro={pro} key={id} />
         ))}
       </Slider>
     </div>

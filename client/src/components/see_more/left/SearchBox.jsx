@@ -76,14 +76,6 @@ const SearchBox = () => {
           ))}
         </div>
       </div>
-      {/* <div>
-        <h2 className=" bg-slate-200 p-2">{t("price")}</h2>
-        <div className="flex flex-col gap-3 p-[10px] bg-white">
-          {arangePrice.map((price) => (
-            <FilterPrice title={price} getValue={getPrice} />
-          ))}
-        </div>
-      </div> */}
       <div>
         <h2 className=" bg-slate-200 p-2">{t("brand")}</h2>
         <div className="flex flex-col gap-3 p-[10px] bg-white">

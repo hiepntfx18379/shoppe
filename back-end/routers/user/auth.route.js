@@ -3,6 +3,7 @@ const authController = require("../../controller/user/auth.controller");
 const authRoute = express.Router();
 const passport = require("passport");
 const verifyToken = require("../../utils/verifyToken");
+const jwt = require("jsonwebtoken");
 
 // by
 authRoute.post("/register", authController.register);
@@ -17,7 +18,7 @@ authRoute.post("/verify", authController.verifyOtp);
 // login gg
 authRoute.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile"] }),
+  passport.authenticate("google", { scope: ["profile", "email"] }),
 );
 
 authRoute.get(
@@ -28,27 +29,22 @@ authRoute.get(
   }),
 );
 
-// login fb
-authRoute.get(
-  "/facebook",
-  passport.authenticate("facebook", { scope: ["profile"] }),
-);
-
-authRoute.get(
-  "/facebook/callback",
-  passport.authenticate("facebook", {
-    successRedirect: "http://localhost:3000",
-    failureRedirect: "/login/failed",
-  }),
-);
-
 authRoute.get("/login/sucess", (req, res) => {
   if (req.user) {
-    res.status(200).json({
-      success: true,
-      message: "successfull",
-      user: req.user,
+    console.log(req.user);
+    const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRES,
     });
+    res
+      .cookie("token", token, {
+        httpOnly: true,
+      })
+      .status(200)
+      .json({
+        success: true,
+        message: "successfull",
+        user: req.user,
+      });
   }
 });
 

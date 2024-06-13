@@ -1,13 +1,27 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ShippingAdress from "../home/product/detail/shipping/ShippingAddress";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { infoUser } from "../user/user.slide";
 
 const InfoCustomer = ({ num }) => {
+  const [missReceiver, setMissReceiver] = useState(false);
   const infoReceiver = useSelector(infoUser);
   const [openChangeAddress, setOpenChangeAddress] = useState(false);
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (
+      infoReceiver?.receiver?.name === "" ||
+      infoReceiver?.receiver?.phone === "" ||
+      infoReceiver?.receiver?.address === "" ||
+      infoReceiver?.receiver?.detail === ""
+    ) {
+      setMissReceiver(true);
+    } else {
+      setMissReceiver(false);
+    }
+  }, [infoReceiver]);
 
   return (
     <>
@@ -56,11 +70,11 @@ const InfoCustomer = ({ num }) => {
             >
               {t("change")}
             </div>
-            {openChangeAddress && (
+            {openChangeAddress || missReceiver ? (
               <div className=" absolute top-[25px]">
                 <ShippingAdress setAddress={setOpenChangeAddress} />
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

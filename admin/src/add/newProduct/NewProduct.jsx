@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { productInputs } from "../../formSource";
 import { toast } from "react-toastify";
 import "../../../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import { convertToRaw, EditorState, ContentState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
@@ -52,7 +52,7 @@ const NewProduct = ({ title }) => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      const listImages = await Promise.all(
+      const list = await Promise.all(
         Object.values(file).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
@@ -69,61 +69,6 @@ const NewProduct = ({ title }) => {
 
       const { actualPrice, brand, list_size, oldPrice, stock, title } = info;
 
-      const listInput = [
-        {
-          field: "Sale",
-          value: actualPrice,
-        },
-        {
-          field: "Price",
-          value: oldPrice,
-        },
-
-        {
-          field: "Images",
-          value: listImages,
-        },
-        {
-          field: "Brand",
-          value: brand,
-        },
-        {
-          field: "List Size",
-          value: list_size,
-        },
-        {
-          field: "Long Desc",
-          value: long_desc,
-        },
-        {
-          field: "Old Price",
-          value: oldPrice,
-        },
-        {
-          field: "Short Desc",
-          value: short_desc,
-        },
-        {
-          field: "Stock",
-          value: stock,
-        },
-        {
-          field: "Name",
-          value: title,
-        },
-      ];
-
-      for (let input of listInput) {
-        if (input.value === "") {
-          alert(input.field + " not empty, please check again");
-          return false;
-        } else if (input.value.length === 0) {
-          alert(input.field + " not empty, please check again");
-          return false;
-        }
-        return true;
-      }
-
       const sizes = `${list_size}`.split(",");
       const newPro = {
         actualPrice,
@@ -132,18 +77,19 @@ const NewProduct = ({ title }) => {
         stock,
         title,
         list_size: sizes,
-        album: listImages,
+        album: list,
         short_desc: text_short_desc,
         long_desc: text_long_desc,
         flashSale: JSON.parse(flashSale),
         category,
       };
 
-      await axios.post("/product/create-product", newPro);
-      toast.success("Added new product");
+      const res = await axios.post("/product/create-product", newPro);
+      if (res.data.status) toast.success("Added new product");
+      else alert(res.response.data.message);
       navigate("/product");
     } catch (err) {
-      alert("Please check fields again, Empty!!! ");
+      alert(err.response.data.message);
     }
   };
 
@@ -190,6 +136,7 @@ const NewProduct = ({ title }) => {
                     name={input.id}
                     type={input.type}
                     placeholder={input.placeholder}
+                    required
                   />
                 </div>
               ))}

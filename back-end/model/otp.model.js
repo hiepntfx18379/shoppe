@@ -14,7 +14,7 @@ const OtpSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      index: { expires: 300 }, // after 5min auto del from db
+      index: { expires: 10 }, // after 10s auto del from db
     },
   },
   { timestamps: true },

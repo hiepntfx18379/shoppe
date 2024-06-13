@@ -19,8 +19,12 @@ userRoute.delete("/deleteOneOrMany/:id", userController.deleteOneOrMany);
 userRoute.delete("/deleteAll", userController.deleteAll);
 userRoute.get("/logout", authenticated, userController.logout);
 userRoute.get("/find/:id", userController.findUser);
-userRoute.post("/confirmPass/:id", userController.confirmPass);
+userRoute.post("/confirmPass/:id", verifyToken, userController.confirmPass);
 userRoute.patch("/receiver", userController.receiver);
 userRoute.post("/verifyOldPwd", verifyToken, userController.verifyOldPwd);
+userRoute.post("/addtoCard", verifyToken, userController.addtoCard);
+userRoute.post("/deleteproduct", verifyToken, userController.deletePro);
+userRoute.patch("/increQuantity", verifyToken, userController.increPro);
+userRoute.patch("/decreQuantity", verifyToken, userController.decrePro);
 
 module.exports = userRoute;

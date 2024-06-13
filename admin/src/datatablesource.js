@@ -1,13 +1,11 @@
-import { Button } from "@mui/material";
-
 export const userColumns = [
   {
     field: "user",
     headerName: "User",
-    width: 230,
+    width: 200,
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
+        <div className="flex flex-row justify-around items-center gap-2">
           <img
             className=" mr-2"
             width="30px"
@@ -27,19 +25,31 @@ export const userColumns = [
   {
     field: "email",
     headerName: "Email",
-    width: 230,
+    width: 200,
   },
 
   {
     field: "phone",
     headerName: "Phone Number",
-    width: 100,
+    width: 120,
   },
+  /*
   {
-    field: "address",
-    headerName: "Address",
-    width: 100,
+    field: "receiver",
+    headerName: "Receiver",
+    width: 300,
+    renderCell: (params) => {
+      return (
+        <div className=" text-center ">
+          {params.row?.receiver?.name},{"   "}
+          <span>
+            {params.row?.receiver?.detail}, {params.row?.receiver?.address}
+          </span>
+        </div>
+      );
+    },
   },
+  */
   {
     field: "role",
     headerName: "Role",
@@ -52,17 +62,18 @@ export const productColumns = [
     field: "album",
     headerName: "Name",
     renderCell: (params) => {
+      console.log(params.row.title);
       return (
         <>
           {params ? (
-            <div className="cellWithImg">
+            <div className="flex flex-row justify-around items-center gap-2">
               <img
                 width="70px"
                 height="70px"
                 src={params?.row?.album ? params?.row?.album[0] : ""}
                 alt="avatar"
               />
-              {params?.row?.title}
+              <span className="text-black">{params.row.title}</span>
             </div>
           ) : (
             ""
@@ -82,7 +93,7 @@ export const productColumns = [
     headerName: "Price",
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
+        <div className=" text-center ">
           {new Intl.NumberFormat("en-DE").format(
             params?.row?.actualPrice
               ? params?.row?.actualPrice.replaceAll(".", "")
@@ -102,80 +113,70 @@ export const productColumns = [
 ];
 
 export const ordersColumns = [
-  { field: "_id", headerName: "ID", width: 70 },
   {
-    field: "user",
+    field: "_id",
+    headerName: "ID",
+    width: 100,
+    renderCell: (params) => {
+      return (
+        <div className=" text-center ">
+          {params.row?._id.substring(params.row?._id.length - 10)}
+        </div>
+      );
+    },
+  },
+  {
+    field: "buyer",
     headerName: "User",
     width: 130,
     renderCell: (params) => {
-      return <div className="cellWithImg">{params.row.name}</div>;
+      return <div className=" text-center ">{params.row?.buyer?.name}</div>;
     },
   },
   {
     field: "phone",
     headerName: "Phone",
-    width: 100,
+    width: 120,
+    renderCell: (params) => {
+      return <div className=" text-center ">{params.row?.buyer?.phone}</div>;
+    },
   },
   {
     field: "address",
     headerName: "Address",
-    width: 100,
-  },
-  {
-    field: "products",
-    headerName: "Products",
+    width: 350,
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
-          {params.row.products.map((it) => {
-            return <img width={40} height={40} src={it.photos[0]} alt="" />;
-          })}
+        <div className=" text-center ">
+          {params.row?.buyer?.receiver?.detail}|{" "}
+          {params.row?.buyer?.receiver?.address.substring(0, 20)}...
         </div>
       );
     },
-    width: 200,
   },
+
   {
-    field: "totalPrice",
-    headerName: "Bill",
+    field: "payment_method",
+    headerName: "Payment Method",
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">
-          {new Intl.NumberFormat("en-DE").format(params.row.totalPrice)} VND
+        <div className=" text-center ">
+          {params.row?.payment_method === "cod" ? "Khi nhận hàng" : "Bằng thẻ"}
         </div>
       );
     },
-    width: 150,
-  },
-  {
-    field: "delivery",
-    headerName: "Delivery",
-    renderCell: (params) => {
-      return (
-        <div className="cellWithImg">{params.row.delivery.split(" ")[0]}</div>
-      );
-    },
-    width: 100,
+    width: 120,
   },
   {
     field: "status",
     headerName: "Status",
     renderCell: (params) => {
       return (
-        <div className="cellWithImg">{params.row.status.split(" ")[0]}</div>
+        <div className=" text-center ">
+          {params.row.status ? "Đã " : "Chưa"} trả tiền
+        </div>
       );
     },
     width: 100,
   },
 ];
-
-const BgStatus = (status) => {
-  if (status === "Booked")
-    return <Button sx={{ bgcolor: "pink", color: "black" }}>Booked</Button>;
-  if (status === "Checkout")
-    return (
-      <Button sx={{ bgcolor: "#DCC8DE", color: "black" }}>Checkout</Button>
-    );
-  if (status === "Checkin")
-    return <Button sx={{ bgcolor: "green", color: "black" }}>Checkin</Button>;
-};

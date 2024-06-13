@@ -18,7 +18,9 @@ const getAllUser = async (req, res) => {
 
 const getUser = async (req, res) => {
   try {
-    const user = await userModel.findById(req.user.id);
+    const user = await userModel
+      .findById(req.user.id)
+      .select("id name email phone password receiver avatar cardList");
     if (!user) res.status(400).json({ message: "User doesn't exist" });
     res.status(200).json({ success: true, user });
   } catch (err) {
@@ -68,6 +70,7 @@ const forgotPassword = async (req, res, next) => {
       res.status(201).json({
         success: true,
         message: `Please check your email to reset password`,
+        user: null,
       });
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
@@ -155,19 +158,24 @@ const findUser = async (req, res) => {
 const confirmPass = async (req, res) => {
   try {
     const user = await userModel
+      .findOne({ _id: req.user.id })
+      .select("name email phone password receiver");
+
+    const userChangeRole = await userModel
       .findById(req.params.id)
       .select("name password role");
+
     const { password } = req.body;
 
     const isPasswordValid = await user.comparePassword(password);
 
     if (isPasswordValid) {
-      if (user.role === "admin") {
-        user.role = "user";
-        await user.save();
+      if (userChangeRole.role === "admin") {
+        userChangeRole.role = "user";
+        await userChangeRole.save();
       } else {
-        user.role = "admin";
-        await user.save();
+        userChangeRole.role = "admin";
+        await userChangeRole.save();
       }
       res.status(200).json({ message: "Change role successfully" });
     } else {
@@ -213,7 +221,65 @@ const verifyOldPwd = async (req, res) => {
   }
 };
 
+const addtoCard = async (req, res) => {
+  try {
+    const { product } = req.body;
+    const user = await userModel.findOne({ _id: req.user.id });
+    user.cardList.push(product);
+    await user.save();
+    res.status(200).json({ user });
+  } catch (err) {
+    res.status(400).json({ message: "Something is wrong" });
+  }
+};
+
+const increPro = async (req, res) => {
+  try {
+    const { idPro, size } = req.body;
+    const user = await userModel
+      .find({
+        _id: req.user.id,
+      })
+      .findOneAndUpdate(
+        { "cardList._id": idPro, "cardList.size": size },
+        { $inc: { "cardList.$.quantity": +1 } },
+      );
+    await user.save();
+    res.status(200).json({ user });
+  } catch {}
+};
+
+const decrePro = async (req, res) => {
+  try {
+    const { idPro, size } = req.body;
+    const user = await userModel
+      .find({
+        _id: req.user.id,
+      })
+      .findOneAndUpdate(
+        { "cardList._id": idPro, "cardList.size": size },
+        { $inc: { "cardList.$.quantity": -1 } },
+      );
+    await user.save();
+    res.status(200).json({ user });
+  } catch {}
+};
+
+const deletePro = async (req, res) => {
+  try {
+    const user = await userModel.findOne({ _id: req.user.id });
+    const { idPro, size } = req.body;
+    const index = user.cardList.findIndex(
+      (x) => x._id === idPro && x.size === size,
+    );
+    user.cardList.splice(index, 1);
+    await user.save();
+    res.status(200).json({ user });
+  } catch {}
+};
+
 module.exports = {
+  
   getUser,
   getAllUser,
   logout,
@@ -227,4 +293,8 @@ module.exports = {
   confirmPass,
   receiver,
   verifyOldPwd,
+  addtoCard,
+  increPro,
+  decrePro,
+  deletePro,
 };

@@ -26,29 +26,40 @@ const Orders = () => {
 
   return (
     <div>
-      <h2>Danh sách đặt</h2>
-      <div className="px-3 mt-5 relative">
+      <h2 className="text-2xl text-black p-4">Danh sách đơn hàng</h2>
+      <div className="px-3 relative">
         {listOrders.length > 0 ? (
-          <table className="table-auto">
+          <table className="border-collapse border border-slate-400">
             <thead className=" ">
               <tr>
-                <th>Mã đơn hàng</th>
-                <th scope="col" className="px-3 py-3 w-[150px]">
+                <th className="px-3 py-3 w-[150px] border border-slate-300">
+                  Mã đơn hàng
+                </th>
+                <th
+                  scope="col"
+                  className="px-3 py-3 w-[150px] border border-slate-300"
+                >
                   Người nhận
                 </th>
-                <th scope="col" className="px-3 py-3 w-[240px]">
+                <th
+                  scope="col"
+                  className="px-3 py-3 w-[240px] border border-slate-300"
+                >
                   Địa chỉ
                 </th>
-                <th scope="col" className="px-3 py-3">
+                <th scope="col" className="px-3 py-3 border border-slate-300">
                   Sản phẩm
                 </th>
-                <th scope="col" className="px-3 py-3">
+                <th scope="col" className="px-3 py-3 border border-slate-300">
                   Tổng
                 </th>
-                <th scope="col" className="px-3 py-3 w-[145px]">
+                <th
+                  scope="col"
+                  className="px-3 py-3 w-[145px] border border-slate-300"
+                >
                   Trạng thái
                 </th>
-                <th scope="col" className="px-3 py-3">
+                <th scope="col" className="px-3 py-3 border border-slate-300">
                   Hóa đơn
                 </th>
               </tr>

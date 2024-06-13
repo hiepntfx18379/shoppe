@@ -5,16 +5,21 @@ const PopupOrderRow = ({ item }) => {
     <tr>
       <td className=" font-semibold">{item.name}</td>
       <td>
-        <img width={50} height={50} src={item.photos[1]} alt="" />
+        <img width={50} height={50} src={item.img} alt="" />
       </td>
+      <td>{item.size}</td>
       <td>
-        {new Intl.NumberFormat("en-DE").format(item.price)}
+        {new Intl.NumberFormat("en-DE").format(
+          Number(item.actualPrice.replaceAll(".", "")),
+        )}
         <br />
         VND
       </td>
       <td>{item.quantity}</td>
       <td>
-        {new Intl.NumberFormat("en-DE").format(item.price * item.quantity)}
+        {new Intl.NumberFormat("en-DE").format(
+          Number(item.actualPrice.replaceAll(".", "")) * item.quantity,
+        )}
         <br />
         VND
       </td>

@@ -32,15 +32,15 @@ const ShippingAdress = ({ setAddress }) => {
                 <div className=" mt-2">
                   <div>
                     <span className=" pr-2 text-base  border-r-2 border-black/[.54]">
-                      {info.receiver.name}
+                      {info.receiver?.name}
                     </span>
                     <span className=" pl-2 text-[rgba(0,0,0,0.54)]">
-                      {info.receiver.phone.substring(1)}
+                      {info.receiver?.phone.substring(1)}
                     </span>
                   </div>
                   <div className="flex flex-col text-black/[.54]">
-                    <span>{info.receiver.detail}</span>
-                    <span>{info.receiver.address}</span>
+                    <span>{info.receiver?.detail}</span>
+                    <span>{info.receiver?.address}</span>
                   </div>
                 </div>
               )}

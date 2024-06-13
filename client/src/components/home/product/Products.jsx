@@ -12,7 +12,7 @@ const Products = ({ products }) => {
       </div>
 
       <div className="grid grid-cols-5 justify-between">
-        {products.slice(0, 15).map((pro) => (
+        {products.slice(0, 10).map((pro) => (
           <ProductItem item={pro} products={products} />
         ))}
       </div>

@@ -13,6 +13,7 @@ import { Editor } from "react-draft-wysiwyg";
 import draftToHtml from "draftjs-to-html";
 import htmlToDraft from "html-to-draftjs";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { toast } from "react-toastify";
 
 const UpdateProduct = ({ title }) => {
   const param = useParams();
@@ -67,38 +68,56 @@ const UpdateProduct = ({ title }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+    try {
+      const list = await Promise.all(
+        Object.values(file).map(async (file) => {
+          const data = new FormData();
+          data.append("file", file);
+          data.append("upload_preset", "upload");
+          const uploadRes = await axios.post(
+            "https://api.cloudinary.com/v1_1/dmwl0pu3j/image/upload",
+            data,
+          );
 
-    const list = await Promise.all(
-      Object.values(file).map(async (file) => {
-        const data = new FormData();
-        data.append("file", file);
-        data.append("upload_preset", "upload");
-        const uploadRes = await axios.post(
-          "https://api.cloudinary.com/v1_1/dmwl0pu3j/image/upload",
-          data,
-        );
+          const { url } = uploadRes.data;
+          return url;
+        }),
+      );
 
-        const { url } = uploadRes.data;
-        return url;
-      }),
-    );
+      const { actualPrice, brand, list_size, oldPrice, stock, title } = info;
+      const sizes = `${list_size}`.split(",");
+      let list_imgs = [];
+      if (list.length === 0) {
+        list_imgs = [...info.album];
+      } else {
+        list_imgs = [...list];
+      }
 
-    const { list_size, ...rest } = info;
+      const updateProduct = {
+        actualPrice,
+        brand,
+        oldPrice,
+        stock,
+        title,
+        list_size: sizes,
+        album: list_imgs,
+        short_desc: text_short_desc,
+        long_desc: text_long_desc,
+      };
 
-    const sizes = `${list_size}`.split(",");
-    const updateProduct = {
-      ...rest,
-      list_size: sizes,
-      short_desc: text_short_desc,
-      long_desc: text_long_desc,
-    };
-    if (list.length !== 0) {
-      updateProduct.photos = list;
+      const res = await axios.patch(
+        `/product/update/${param.id}`,
+        updateProduct,
+      );
+      if (res.data.status) {
+        toast.success(res.data.message);
+      } else {
+        alert(toast.response.data.message);
+      }
+      navigate("/product");
+    } catch (err) {
+      alert(err.response.data.message);
     }
-
-    await axios.patch(`/product/update/${param.id}`, updateProduct);
-
-    navigate("/product");
   };
 
   return (

@@ -21,7 +21,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { getAllPros, setSeenPro } from "../../productsHome.slide";
 import { useTranslation } from "react-i18next";
 import ProductItem from "../ProductItem";
-import { infoUser } from "../../../user/user.slide";
+import { infoUser, setUser } from "../../../user/user.slide";
+import {
+  FacebookShareButton,
+  FacebookMessengerShareButton,
+  InstapaperShareButton,
+  TwitterShareButton,
+} from "react-share";
+import axios from "axios";
 
 function SampleNextArrow(props) {
   const { className, style, onClick } = props;
@@ -112,34 +119,56 @@ const DetailProduct = () => {
       setNumberProduct(1);
     } else setNumberProduct(numberProduct - 1);
   };
+
   const handleIncrement = () => {
     if (numberProduct < product.stock) {
       setNumberProduct(numberProduct + 1);
     }
   };
 
-  const displayNotice = useCallback(() => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      if (size === "") {
-        alert("Vui lòng chọn size!");
-        return false;
+  const displayNotice = useCallback(async () => {
+    try {
+      if (!user) {
+        navigate("/login");
+      } else {
+        if (size === "") {
+          alert("Vui lòng chọn size!");
+          return false;
+        }
+
+        setNoticeAddcart(true);
+        const res = await axios.post("/user/addtoCard", {
+          product: {
+            _id: product._id,
+            name: product.title,
+            actualPrice: product.actualPrice,
+            img: product.album[0],
+            oldPrice: product.oldPrice,
+            quantity: numberProduct,
+            stock: product.stock,
+            size,
+          },
+        });
+
+        dispatch(setUser(res.data.user));
+
+        dispatch(
+          addItem({
+            _id: product._id,
+            name: product.title,
+            actualPrice: product.actualPrice,
+            img: product.album[0],
+            oldPrice: product.oldPrice,
+            quantity: numberProduct,
+            stock: product.stock,
+            size,
+          }),
+        );
+
+        setSize("");
       }
-      setNoticeAddcart(true);
-      dispatch(
-        addItem({
-          _id: product._id,
-          name: product.title,
-          actualPrice: product.actualPrice,
-          img: product.album[0],
-          oldPrice: product.oldPrice,
-          quantity: numberProduct,
-          stock: product.stock,
-          size,
-        }),
-      );
-      setSize("");
+    } catch (errr) {
+      console.log(errr);
     }
   }, [dispatch, navigate, user, product, numberProduct, size]);
 
@@ -151,31 +180,56 @@ const DetailProduct = () => {
     return () => clearTimeout(timer);
   });
 
-  const handleBuy = () => {
-    if (!user) {
-      navigate("/login");
-    } else {
-      if (size === "") {
-        alert("Vui lòng chọn size!");
-        return false;
-      }
+  const handleBuy = useCallback(async () => {
+    try {
+      if (!user) {
+        navigate("/login");
+      } else {
+        if (size === "") {
+          alert("Vui lòng chọn size!");
+          return false;
+        } else if (
+          user.receiver.name === "" ||
+          user.receiver.phone === "" ||
+          user.receiver.address === "" ||
+          user.receiver.detail === ""
+        ) {
+          alert("Vui lòng điền địa chỉ giao hàng!");
+          return false;
+        }
 
-      dispatch(
-        addItem({
-          _id: product._id,
-          name: product.title,
-          actualPrice: product.actualPrice,
-          img: product.album[0],
-          oldPrice: product.oldPrice,
-          quantity: numberProduct,
-          stock: product.stock,
-          size,
-        }),
-      );
-      setSize("");
-      navigate("/cart");
+        const res = await axios.post("/user/addtoCard", {
+          product: {
+            _id: product._id,
+            name: product.title,
+            actualPrice: product.actualPrice,
+            img: product.album[0],
+            oldPrice: product.oldPrice,
+            quantity: numberProduct,
+            stock: product.stock,
+            size,
+          },
+        });
+        dispatch(setUser(res.data.user));
+        dispatch(
+          addItem({
+            _id: product._id,
+            name: product.title,
+            actualPrice: product.actualPrice,
+            img: product.album[0],
+            oldPrice: product.oldPrice,
+            quantity: numberProduct,
+            stock: product.stock,
+            size,
+          }),
+        );
+        setSize("");
+        navigate("/cart");
+      }
+    } catch (errr) {
+      console.log(errr);
     }
-  };
+  }, [dispatch, navigate, user, product, numberProduct, size]);
 
   return (
     <>
@@ -207,18 +261,27 @@ const DetailProduct = () => {
             <div className="flex gap-2 items-center">
               <span className=" text-base"> {t("share")} </span>
               <div className="flex gap-1">
-                <button>
-                  <img src={mess} alt="" width="25px" height="25px" />
-                </button>
-                <button>
+                <FacebookShareButton
+                  url={
+                    "https://vnexpress.net/lamborghini-huracan-evo-sieu-bo-gia-28-ty-dong-4521223.html"
+                  }
+                  quote={"huracan evo"}
+                  hashtag="#huracan"
+                >
                   <img src={fb} alt="" width="25px" height="25px" />
-                </button>
-                <button>
+                </FacebookShareButton>
+                <FacebookMessengerShareButton
+                  url={"http://localhost:3000/detail/65e34d76afab92e6a45ab36c"}
+                >
+                  <img src={mess} alt="" width="25px" height="25px" />
+                </FacebookMessengerShareButton>
+                <InstapaperShareButton>
                   <img src={insta} alt="" width="25px" height="25px" />
-                </button>
-                <button>
+                </InstapaperShareButton>
+
+                <TwitterShareButton>
                   <img src={tw} alt="" width="25px" height="25px" />
-                </button>
+                </TwitterShareButton>
               </div>
             </div>
             <div className="border opacity-75 border-black h-[25px]"></div>
@@ -254,7 +317,7 @@ const DetailProduct = () => {
                   1 -
                     (
                       Number(product?.actualPrice.replaceAll(".", "")) /
-                      Number(product.oldPrice.replaceAll(".", ""))
+                      Number(product?.oldPrice.replaceAll(".", ""))
                     ).toFixed(2),
                 ) * 100
               ).toFixed(0)}
@@ -295,8 +358,8 @@ const DetailProduct = () => {
                   onClick={() => setAddress(true)}
                 >
                   <span className="text-[#000]">
-                    {user
-                      ? user.receiver.address.substring(0, 26)
+                    {user.receiver.address !== ""
+                      ? user?.receiver?.address.substring(0, 26)
                       : "Huyện Ba Vì"}
                   </span>
                   <img
@@ -316,7 +379,7 @@ const DetailProduct = () => {
                   onMouseOver={onShippingPrice}
                 >
                   <span className="text-[#000] hover:text-[#ee4d2d]">
-                    ₫ 32.500
+                    ₫ 30.000
                   </span>
                   <img
                     src="https://deo.shopeemobile.com/shopee/shopee-pcmall-live-sg/productdetailspage/c98ab2426710d89c9f14.svg"

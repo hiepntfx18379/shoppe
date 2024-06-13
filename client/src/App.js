@@ -33,11 +33,12 @@ function App() {
   return (
     <>
       <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verifyOtp" element={<OTPVerify />} />
         <Route path="/" element={<ParentPage />}>
           <Route index element={user ? <Home /> : <Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/verifyOtp" element={<OTPVerify />} />
+
           <Route path="/infoUser" element={<InfoUSer />} />
           <Route path="/forgotPwd" element={<ForgotPassword />} />
           <Route path="/verifyForgotPwd" element={<Verify />} />

@@ -1,17 +1,31 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import bgLogin from "../images/login/login2.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Header from "../../header/Header";
-import CountdownTime from "./CountdownTime";
 
 const OTPVerify = () => {
   const phone = useLocation().state.phone;
   const [otp, setOTP] = useState("");
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [active, setActive] = useState(false);
+  const [expireNotice, setExpireNotice] = useState(false);
+  const [time, setTime] = useState(10);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (time > 0) setTime((pre) => pre - 1);
+      else {
+        setActive(true);
+        setExpireNotice(true);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [time]);
 
   const handleSubmit = useCallback(
     async (e) => {
@@ -31,11 +45,18 @@ const OTPVerify = () => {
   );
 
   const getOTP = useCallback(async () => {
-    const ss = await axios.post("http://localhost:5000/auth/signUp", {
-      phone,
-    });
-
-    toast.success(ss.data.message);
+    try {
+      const ss = await axios.post("http://localhost:5000/auth/signUp", {
+        phone,
+      });
+      setActive(false);
+      setExpireNotice(false);
+      setTime(10);
+      setOTP("");
+      toast.success(ss.data.message);
+    } catch (err) {
+      console.log(err);
+    }
   }, [phone]);
 
   return (
@@ -62,9 +83,13 @@ const OTPVerify = () => {
                     value={otp}
                     onChange={(e) => setOTP(e.target.value)}
                     required
-                    className="appearance-none block w-full px-3 py-2 border 
-                  border-gray-300 shadow-sm placeholder-zinc-500 
-                  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    disabled={active}
+                    title={active ? "Mã OTP hết hạn, vui lòng lấy lại mã" : ""}
+                    className={`appearance-none block w-full px-3 py-2 border 
+                  border-gray-300 shadow-sm placeholder-zinc-500 ${
+                    active ? "cursor-not-allowed" : ""
+                  }
+                  focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm`}
                   />
                 </div>
               </div>
@@ -72,20 +97,22 @@ const OTPVerify = () => {
               <div className="">
                 <button
                   type="submit"
-                  disabled={otp === "" ? true : false}
+                  disabled={otp === "" || expireNotice ? true : false}
                   className={
-                    otp === ""
+                    otp === "" || expireNotice
                       ? `opacity-50 cursor-not-allowed group relative w-full h-[40px] flex justify-center px-4 py-1 border border-transparent text-xl font-medium  bg-main text-white`
                       : " opacity-100 cursor-point group relative w-full h-[40px] flex justify-center px-4 py-1 border border-transparent text-xl font-medium  bg-main text-white"
                   }
+                  title={expireNotice ? "Mã OTP hết hiệu lực, lấy lại mã" : ""}
                 >
                   {t("next")}
                 </button>
               </div>
             </form>
-
             <div className="flex justify-between mt-2">
-              <CountdownTime />
+              {time > 0
+                ? `Mã sẽ vô hiệu trong ${time}s`
+                : "OTP hết hạn, vui lấy lại mã"}
               <button
                 className=" underline  text-blue-500"
                 onClick={() => getOTP()}

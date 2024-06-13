@@ -11,7 +11,7 @@ const BoxUser = () => {
 
   const handleLogout = () => {
     window.open("http://localhost:5000/auth/logout", "_self");
-    dispatch(setUser(null));
+    dispatch(setUser(null)); 
   };
 
   return (

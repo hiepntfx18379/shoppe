@@ -8,6 +8,7 @@ import { getSeenProducts } from "../home/productsHome.slide";
 import { useTranslation } from "react-i18next";
 import Pagination from "../see_more/pagination/Pagination";
 import MessengerCustomerChat from "react-messenger-customer-chat";
+import { toast } from "react-toastify";
 
 export const userContext = createContext(null);
 
@@ -35,10 +36,8 @@ const ParentPage = () => {
         })
         .then((resObj) => {
           getUserr(resObj.user);
-          const newUser = {
-            name: resObj.user.displayName,
-          };
-          dispatch(setUser(newUser));
+          const { email, name, phone, receiver, cardList } = resObj.user;
+          dispatch(setUser({ email, name, phone, receiver, cardList }));
         })
         .catch((err) => {
           console.log(err);
@@ -64,8 +63,8 @@ const ParentPage = () => {
           throw new Error("authentication has been failed!");
         })
         .then((resObj) => {
-          const { email, name, phone, receiver } = resObj.user;
-          dispatch(setUser({ name, email, phone, receiver }));
+          const { email, name, phone, receiver, cardList } = resObj.user;
+          dispatch(setUser({ name, email, phone, receiver, cardList }));
         })
         .catch((err) => {
           console.log(err);
@@ -92,7 +91,7 @@ const ParentPage = () => {
 
         <Footer />
       </div>
-      <MessengerCustomerChat pageId="112933455019534" appId="553429326697551" />
+      {/* <MessengerCustomerChat pageId="112933455019534" appId="553429326697551" /> */}
     </userContext.Provider>
   );
 };

@@ -1,16 +1,19 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { VscPassFilled } from "react-icons/vsc";
 import { useTranslation } from "react-i18next";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { infoUser } from "../user/user.slide";
+import { infoUser, setUser } from "../user/user.slide";
+import { useNavigate } from "react-router-dom";
 
 const Total = ({ total, products }) => {
   const infoBuyer = useSelector(infoUser);
   const [active, setActive] = useState("cod");
   const { t } = useTranslation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const checkoutCard = async () => {
     try {
@@ -21,6 +24,12 @@ const Total = ({ total, products }) => {
         products,
         infoBuyer,
       });
+
+      await Promise.all(
+        products.map(async (it) => {
+          await axios.post("/user/deleteproduct", { idPro: it._id });
+        }),
+      );
 
       const session = response.data.id;
       const result = stripe.redirectToCheckout({
@@ -39,6 +48,18 @@ const Total = ({ total, products }) => {
         infoBuyer,
       });
 
+      await Promise.all(
+        products.map(
+          async (it) =>
+            await axios.post("/user/deleteproduct", {
+              idPro: it._id,
+              size: it.size,
+            }),
+        ),
+      ).then(async (res) => {
+        dispatch(setUser(res[0].data.user));
+      });
+      navigate("/profile/purchase");
       toast.success(response.data.message);
     } catch (e) {
       toast.error(e.response.data.message);

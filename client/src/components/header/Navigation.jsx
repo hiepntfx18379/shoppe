@@ -96,12 +96,6 @@ const Navigation = () => {
               <>
                 <div className=" flex gap-1 items-center pt-2 hover:cursor-pointer hover:text-[rgb(0,0,0,0.75)] hover:opacity-50 ">
                   <div className="w-[22px] rounded-[50%] outline-none h-[22px]">
-                    {/* <img
-                      src={user.photos[0].value}
-                      alt=""
-                      className=" object-cover border rounded-[50%] outline-none"
-                    /> */}
-
                     <Avatar
                       name={user.displayName || user.name}
                       color={Avatar.getRandomColor("sitebase", [

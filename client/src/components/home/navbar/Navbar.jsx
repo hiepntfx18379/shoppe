@@ -2,15 +2,19 @@ import { BsCart } from "react-icons/bs";
 
 import Title from "./Title";
 import { useSelector } from "react-redux";
-import { allItemsCart } from "../product/product.slide";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import DisplayCart from "./DisplayCart";
 import { Link, useNavigate } from "react-router-dom";
 import { getAllPros } from "../productsHome.slide";
+import { userContext } from "../../parentPage/ParentPage";
+import { infoUser } from "../../user/user.slide";
 
 const Navbar = () => {
-  const numberOfCart = useSelector(allItemsCart);
+  const info = useContext(userContext);
+  const info2 = useSelector(infoUser);
+  console.log(info2);
+  const [numberOfCart, setNumberOfCard] = useState([]);
   const [display, setDisplay] = useState(false);
   const [textSearch, setTextSearch] = useState("");
   const [productSearch, setProSearch] = useState([]);
@@ -22,7 +26,8 @@ const Navbar = () => {
       x.title.toLowerCase().includes(textSearch),
     );
     setProSearch(listSearch);
-  }, [textSearch, list]);
+    setNumberOfCard(info2?.cardList || 0);
+  }, [textSearch, list, info2, info]);
 
   const ClickPro = useCallback(
     (id) => {

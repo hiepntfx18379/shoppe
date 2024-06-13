@@ -1,36 +1,29 @@
 import Countdown from "react-countdown";
-import React from "react";
 
-const CountdownTime = () => {
-  const time = 180000;
-  const renderer = ({ hours, minutes, seconds, completed }) => {
+const CountdownTime = ({ time = 10000, k, completed }) => {
+  const renderer = ({ minutes, seconds }) => {
+    console.log(completed);
     if (completed) {
       // Render a complete state
       return (
         <>
-          <span className=" bg-black text-white font-bold p-1 mr-[2px]">
-            00
-          </span>
-          <span className=" bg-black text-white font-bold p-1 mr-[2px]">
-            00
-          </span>
-          <span className=" bg-black text-white font-bold p-1 mr-[2px]">
-            00
-          </span>
+          <h2>OTP hết hạn, vui lấy lại mã</h2>
         </>
       );
     } else {
       return (
         <>
-          <span className=" ">{minutes < 10 ? `0${minutes}` : minutes}</span>:{" "}
-          <span className=" ">{seconds < 10 ? `0${seconds} ` : seconds}</span>
+          <span>
+            {/* {minutes}:{seconds} */}
+            Mã vô hiệu sau {seconds} s
+          </span>
         </>
       );
     }
   };
   return (
     <div>
-      <Countdown date={Date.now() + time} renderer={renderer} />
+      <Countdown date={Date.now() + time} renderer={renderer} key={k} />
     </div>
   );
 };

@@ -23,6 +23,7 @@
     "react-render-html": "^0.6.0",
     "react-router-dom": "^6.21.1",
     "react-scripts": "5.0.1",
+    "react-share": "^5.1.0",
     "react-slick": "^0.29.0",
     "react-toastify": "^10.0.0",
     "slick-carousel": "^1.8.1",

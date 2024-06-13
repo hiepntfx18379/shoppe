@@ -22,12 +22,6 @@ export const userInputs = [
     type: "text",
     placeholder: "phone number",
   },
-  {
-    id: 5,
-    label: "address",
-    type: "text",
-    placeholder: "Address",
-  },
 ];
 
 export const productInputs = [

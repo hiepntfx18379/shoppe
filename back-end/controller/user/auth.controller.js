@@ -20,16 +20,13 @@ const register = async (req, res, next) => {
   try {
     const { name, email, password, phone } = req.body;
     const userEmail = await userModel.findOne({ email });
-
     if (userEmail) return next(new ErrorHandler("User already exists", 400));
-
     const newUser = {
       name,
       email,
       password,
       phone,
     };
-
     try {
       await sendEmail({
         email: newUser.email,
@@ -38,7 +35,6 @@ const register = async (req, res, next) => {
       });
 
       const user = new userModel(newUser);
-
       await user.save();
       sendToken(user, 201, res, "Registration sucessfully");
     } catch (error) {
@@ -86,7 +82,7 @@ const login = async (req, res, next) => {
 
     const user = await userModel
       .findOne({ email })
-      .select("id name email phone password receiver avatar");
+      .select("id name email phone password receiver avatar cardList");
 
     if (!user) {
       return res
@@ -136,60 +132,61 @@ function sendSMS(fromPhone, toPhone, content, callback) {
 }
 
 const signUp = async (req, res) => {
-  const { phone } = req.body;
-  const user = await userModel.findOne({
-    phone,
-  });
+  try {
+    const { phone } = req.body;
+    // const user = await userModel.findOne({
+    //   phone,
+    // });
 
-  if (user)
-    return res.status(400).json({
-      message: "Phone number already registered",
+    // if (user)
+    //   return res.status(400).json({
+    //     message: "Phone number already registered",
+    //   });
+
+    const OTP = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
     });
 
-  const OTP = otpGenerator.generate(6, {
-    digits: true,
-    lowerCaseAlphabets: false,
-    upperCaseAlphabets: false,
-    specialChars: false,
-  });
+    // const phoneNumber = "+84" + phone.substring(1);
+    // sendSMS("0978886345", phoneNumber, OTP, function (responseData) {
+    //   console.log(responseData);
+    // });
+    console.log(OTP);
 
-  // const phoneNumber = "+84" + phone.substring(1);
-  // sendSMS("0978886345", phoneNumber, OTP, function (responseData) {
-  //   console.log(responseData);
-  // });
-
-  await sendEmail({
-    email: phone,
-    subject: "OTP Code",
-    message: `OTP code: ${OTP}`,
-  });
-
-  const salt = await bcrypt.genSalt(10);
-  const optHash = await bcrypt.hash(OTP, salt);
-  const otp = new OtpModel({ phone, otp: optHash });
-  await otp.save();
-  res.status(200).json({ message: "Otp send successfully" });
+    const salt = await bcrypt.genSalt(10);
+    const optHash = await bcrypt.hash(OTP, salt);
+    const otp = new OtpModel({ phone: "0386132323", otp: optHash });
+    await otp.save();
+    res.status(200).json({ message: "Otp send successfully" });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 const verifyOtp = async (req, res) => {
-  const { otp, phone } = req.body;
-  const otpHoder = await OtpModel.find({
-    phone,
-  });
-
-  if (otpHoder.length === 0)
-    return res.status(400).json({ message: "You has a expired OTP!!!" });
-  const rightOtpHoder = otpHoder[otpHoder.length - 1];
-  const validUser = await bcrypt.compare(otp, rightOtpHoder.otp);
-
-  if (rightOtpHoder.phone === phone && validUser) {
-    const otpDel = await OtpModel.deleteMany({ phone: rightOtpHoder.phone });
-    return res.status(200).json({
-      message: "OTP Code matched",
+  try {
+    const { otp, phone } = req.body;
+    const otpHoder = await OtpModel.find({
+      phone,
     });
-  } else {
-    return res.status(400).json({ message: "Your Otp is wrong" });
-  }
+
+    if (otpHoder.length === 0)
+      return res.status(400).json({ message: "You has a expired OTP!!!" });
+    const rightOtpHoder = otpHoder[otpHoder.length - 1];
+    const validUser = await bcrypt.compare(otp, rightOtpHoder.otp);
+
+    if (rightOtpHoder.phone === phone && validUser) {
+      const otpDel = await OtpModel.deleteMany({ phone: rightOtpHoder.phone });
+      return res.status(200).json({
+        message: "OTP Code matched",
+      });
+    } else {
+      return res.status(400).json({ message: "Your Otp is wrong" });
+    }
+  } catch {}
 };
 
 module.exports = {

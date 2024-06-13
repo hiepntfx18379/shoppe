@@ -40,13 +40,13 @@ const Login = () => {
             password,
           })
           .then((res) => {
-            const { name, email, phone, receiver } = res.data.user;
-            dispatch(setUser({ name, email, phone, receiver }));
-            toast.success(res.data.message);
+            const { name, email, phone, receiver, cardList } = res?.data?.user;
+            dispatch(setUser({ name, email, phone, receiver, cardList }));
+            toast.success(res?.data?.message);
             navigate("/");
           });
       } catch (e) {
-        toast.error(e.response.data.message);
+        toast.error(e.response?.data?.message);
       }
     },
     [email, password, dispatch, navigate],

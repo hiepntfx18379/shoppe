@@ -84,11 +84,7 @@ const Register = () => {
             </div>
 
             <div className="flex items-center justify-between gap-1 font-normal outline-none mb-8">
-              <button className=" flex items-center justify-center gap-2 border py-[10px] px-[55px]">
-                <img src={fb} alt="fb_image" width="22px" height="22px" />
-                <span>Facebook</span>
-              </button>
-              <button className="flex items-center justify-center gap-2 border py-[10px] px-[55px]">
+              <button className="flex w-full items-center justify-center gap-2 border py-[10px] px-[55px]">
                 <img src={gg} alt="fb_image" width="22px" height="22px" />
                 <span>Google</span>
               </button>
